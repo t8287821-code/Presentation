@@ -8,160 +8,266 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-      background: #0a0a0f;
-      color: #e5e5e7;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+      background: #080810;
+      color: #e8eaed;
       overflow-x: hidden;
-      line-height: 1.6;
+      line-height: 1.65;
       position: relative;
+      min-height: 100vh;
     }
 
-    /* Animated gradient background */
+    /* Ambient background with depth */
     body::before {
       content: "";
       position: fixed;
       inset: 0;
       background: 
-        radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.15) 0%, transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(58, 134, 255, 0.12) 0%, transparent 50%),
-        radial-gradient(circle at 40% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 50%);
-      animation: gradientShift 15s ease infinite;
+        radial-gradient(ellipse at 30% 20%, rgba(99, 102, 241, 0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 60%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
+      animation: ambientShift 20s ease infinite alternate;
       pointer-events: none;
       z-index: 0;
     }
 
-    @keyframes gradientShift {
-      0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.6; }
-      50% { transform: translate(50px, 50px) scale(1.1); opacity: 0.8; }
+    @keyframes ambientShift {
+      0% { transform: scale(1) translate(0, 0); }
+      100% { transform: scale(1.1) translate(20px, -20px); }
     }
 
-    /* Floating particles */
-    .particle {
+    /* Subtle floating particles */
+    .particle-glint {
       position: fixed;
-      width: 3px;
-      height: 3px;
-      background: rgba(120, 119, 198, 0.3);
+      width: 2px;
+      height: 2px;
+      background: radial-gradient(circle, rgba(167, 139, 250, 0.6), transparent);
       border-radius: 50%;
       pointer-events: none;
-      filter: blur(1px);
-      animation: particleFloat 20s infinite linear;
+      filter: blur(0.5px);
+      animation: glintFloat 25s infinite linear;
       z-index: 1;
-    }
-
-    @keyframes particleFloat {
-      0% { transform: translateY(100vh) translateX(0) scale(0); opacity: 0; }
-      10% { opacity: 1; transform: translateY(90vh) scale(1); }
-      90% { opacity: 1; }
-      100% { transform: translateY(-10vh) translateX(100px) scale(0); opacity: 0; }
-    }
-
-    /* Glass morphism header */
-    .header {
-      text-align: center;
-      padding: 120px 40px 80px;
-      position: relative;
-      z-index: 10;
       opacity: 0;
-      animation: headerReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
     }
 
-    @keyframes headerReveal {
-      from { opacity: 0; transform: translateY(-30px) scale(0.95); filter: blur(10px); }
+    @keyframes glintFloat {
+      0% { transform: translate(0, 100vh) scale(0); opacity: 0; }
+      5% { opacity: 0.4; transform: translate(10px, 95vh) scale(1); }
+      50% { opacity: 0.6; }
+      95% { opacity: 0.4; }
+      100% { transform: translate(100px, -5vh) scale(0); opacity: 0; }
+    }
+
+    /* Glass header container */
+    .header-glass {
+      position: relative;
+      margin: 60px auto 40px;
+      max-width: 900px;
+      padding: 60px 50px;
+      background: rgba(18, 18, 28, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 32px;
+      backdrop-filter: blur(60px) saturate(160%);
+      box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04),
+        0 1px 2px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      opacity: 0;
+      animation: glassReveal 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+      z-index: 10;
+    }
+
+    @keyframes glassReveal {
+      from { opacity: 0; transform: translateY(-40px) scale(0.96); filter: blur(10px); }
       to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
     }
 
-    .header h1 {
-      font-size: 4rem;
+    /* Glass edge highlight */
+    .header-glass::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 32px;
+      padding: 1px;
+      background: linear-gradient(165deg, rgba(255, 255, 255, 0.1), transparent 50%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    .header-glass h1 {
+      font-size: 3.5rem;
       font-weight: 700;
-      background: linear-gradient(135deg, #fff 0%, #a5b4fc 50%, #818cf8 100%);
+      background: linear-gradient(135deg, #f0f0f3 0%, #a5b4fc 60%, #818cf8 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 20px;
-      letter-spacing: -2px;
-      filter: drop-shadow(0 0 30px rgba(120, 119, 198, 0.3));
+      margin-bottom: 18px;
+      letter-spacing: -1.5px;
+      filter: drop-shadow(0 2px 20px rgba(129, 140, 248, 0.25));
     }
 
     .subtitle {
-      font-size: 1.3rem;
+      font-size: 1.15rem;
       color: #9ca3af;
       font-weight: 400;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
+      opacity: 0.85;
     }
 
-    /* Liquid glass container */
-    .slides-container {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 40px 20px 100px;
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
-      position: relative;
-      z-index: 5;
-    }
-
-    /* Glass card with liquid effect */
-    .slide {
-      background: rgba(17, 24, 39, 0.4);
+    /* Navigation glass bar */
+    .nav-glass {
+      position: sticky;
+      top: 20px;
+      max-width: fit-content;
+      margin: 0 auto 60px;
+      padding: 12px 20px;
+      background: rgba(18, 18, 28, 0.4);
       border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 24px;
-      padding: 50px;
-      position: relative;
-      backdrop-filter: blur(40px) saturate(180%);
+      border-radius: 20px;
+      backdrop-filter: blur(40px) saturate(160%);
       box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.35),
-        inset 0 1px 0 rgba(255, 255, 255, 0.05),
-        0 0 0 1px rgba(255, 255, 255, 0.02);
+        0 8px 24px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      display: flex;
+      gap: 8px;
+      z-index: 100;
       opacity: 0;
-      transform: translateY(60px) scale(0.95);
-      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-      overflow: hidden;
+      animation: glassReveal 1s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards;
     }
 
-    /* Glass shimmer effect */
-    .slide::before {
+    /* Glass button - premium interactive */
+    .glass-btn {
+      position: relative;
+      padding: 10px 20px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      color: #b4b9c4;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow: hidden;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    /* Ripple effect container */
+    .glass-btn::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(129, 140, 248, 0.25), transparent 70%);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1), height 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Light sweep effect */
+    .glass-btn::after {
       content: "";
       position: absolute;
       top: 0;
       left: -100%;
       width: 100%;
       height: 100%;
-      background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.03),
-        transparent
-      );
-      transition: left 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+      transition: left 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .slide:hover::before {
+    .glass-btn:hover {
+      background: rgba(129, 140, 248, 0.12);
+      border-color: rgba(129, 140, 248, 0.3);
+      color: #e0e7ff;
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 
+        0 8px 24px rgba(129, 140, 248, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .glass-btn:hover::before {
+      width: 200px;
+      height: 200px;
+    }
+
+    .glass-btn:hover::after {
       left: 100%;
     }
 
-    /* Liquid blob effect */
+    .glass-btn:active {
+      transform: translateY(0) scale(0.98);
+      transition: all 0.1s ease;
+    }
+
+    /* Main container */
+    .slides-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px 20px 100px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      position: relative;
+      z-index: 5;
+    }
+
+    /* Premium glass card */
+    .slide {
+      position: relative;
+      background: rgba(18, 18, 28, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 28px;
+      padding: 48px;
+      backdrop-filter: blur(60px) saturate(160%);
+      box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04),
+        0 1px 2px rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      transform: translateY(60px) scale(0.96);
+      transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow: hidden;
+    }
+
+    /* Glass edge glow */
+    .slide::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 28px;
+      padding: 1px;
+      background: linear-gradient(165deg, rgba(129, 140, 248, 0.15), transparent 40%, rgba(99, 102, 241, 0.1));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      pointer-events: none;
+    }
+
+    /* Ambient light inside card */
     .slide::after {
       content: "";
       position: absolute;
-      top: -50%;
-      right: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(
-        circle,
-        rgba(120, 119, 198, 0.08) 0%,
-        transparent 70%
-      );
-      animation: blobMove 15s ease-in-out infinite;
+      top: -40%;
+      right: -30%;
+      width: 70%;
+      height: 70%;
+      background: radial-gradient(circle, rgba(129, 140, 248, 0.06) 0%, transparent 60%);
+      animation: ambientGlow 10s ease-in-out infinite alternate;
       pointer-events: none;
-      z-index: -1;
+      z-index: 0;
     }
 
-    @keyframes blobMove {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      33% { transform: translate(-20%, 20%) scale(1.1); }
-      66% { transform: translate(20%, -20%) scale(0.9); }
+    @keyframes ambientGlow {
+      0% { transform: translate(0, 0) scale(1); opacity: 0.4; }
+      100% { transform: translate(-10%, 10%) scale(1.2); opacity: 0.6; }
     }
 
     .slide.show {
@@ -169,35 +275,51 @@
       transform: translateY(0) scale(1);
     }
 
-    /* Smooth hover with physics */
     .slide:hover {
-      transform: translateY(-8px) scale(1.01);
+      transform: translateY(-8px) scale(1.005);
       box-shadow: 
-        0 20px 60px rgba(0, 0, 0, 0.4),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1),
-        0 0 0 1px rgba(120, 119, 198, 0.2);
-      border-color: rgba(120, 119, 198, 0.3);
+        0 20px 60px rgba(0, 0, 0, 0.45),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        0 0 0 1px rgba(129, 140, 248, 0.15);
+      border-color: rgba(129, 140, 248, 0.2);
+    }
+
+    .slide:hover::before {
+      opacity: 1;
     }
 
     .slide-number {
       position: absolute;
-      top: 30px;
+      top: 32px;
       right: 40px;
-      font-size: 5rem;
+      font-size: 4.5rem;
       font-weight: 800;
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(120, 119, 198, 0.15));
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(129, 140, 248, 0.12));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      opacity: 0.4;
-      letter-spacing: -3px;
+      opacity: 0.35;
+      letter-spacing: -2px;
+      z-index: 1;
+      transition: all 0.4s ease;
+    }
+
+    .slide:hover .slide-number {
+      opacity: 0.5;
+      transform: scale(1.05);
+    }
+
+    /* Content styling */
+    .slide-content {
+      position: relative;
+      z-index: 1;
     }
 
     .slide h2 {
-      font-size: 2.2rem;
-      margin-bottom: 30px;
-      color: #f9fafb;
+      font-size: 2rem;
+      margin-bottom: 28px;
+      color: #f3f4f6;
       font-weight: 700;
-      letter-spacing: -1px;
+      letter-spacing: -0.5px;
       position: relative;
       padding-bottom: 18px;
     }
@@ -207,20 +329,26 @@
       position: absolute;
       bottom: 0;
       left: 0;
-      width: 60px;
+      width: 50px;
       height: 3px;
       background: linear-gradient(90deg, #818cf8, #6366f1);
       border-radius: 2px;
-      box-shadow: 0 0 20px rgba(129, 140, 248, 0.4);
+      box-shadow: 0 0 12px rgba(129, 140, 248, 0.4);
+      animation: lineGlow 2s ease-in-out infinite;
+    }
+
+    @keyframes lineGlow {
+      0%, 100% { opacity: 1; box-shadow: 0 0 12px rgba(129, 140, 248, 0.4); }
+      50% { opacity: 0.7; box-shadow: 0 0 20px rgba(129, 140, 248, 0.6); }
     }
 
     .slide h3 {
-      font-size: 1.4rem;
-      margin-top: 30px;
-      margin-bottom: 15px;
-      color: #a5b4fc;
+      font-size: 1.3rem;
+      margin-top: 32px;
+      margin-bottom: 14px;
+      color: #c7d2fe;
       font-weight: 600;
-      letter-spacing: -0.3px;
+      letter-spacing: -0.2px;
       display: flex;
       align-items: center;
       gap: 10px;
@@ -232,7 +360,13 @@
       height: 6px;
       background: #818cf8;
       border-radius: 50%;
-      box-shadow: 0 0 10px rgba(129, 140, 248, 0.6);
+      box-shadow: 0 0 8px rgba(129, 140, 248, 0.6), 0 0 16px rgba(129, 140, 248, 0.3);
+      animation: dotPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes dotPulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.7; }
     }
 
     .slide p {
@@ -240,87 +374,64 @@
       line-height: 1.8;
       margin-bottom: 18px;
       color: #d1d5db;
+      position: relative;
     }
 
+    /* Premium highlight with glass effect */
     .highlight {
-      color: #c7d2fe;
+      position: relative;
+      color: #e0e7ff;
       font-weight: 600;
       background: linear-gradient(90deg, rgba(129, 140, 248, 0.15), rgba(99, 102, 241, 0.2));
-      padding: 2px 8px;
-      border-radius: 6px;
-      border-bottom: 1px solid rgba(129, 140, 248, 0.3);
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      padding: 3px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(129, 140, 248, 0.2);
+      backdrop-filter: blur(10px);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      display: inline-block;
+      box-shadow: 0 2px 8px rgba(129, 140, 248, 0.1);
     }
 
     .highlight:hover {
       background: linear-gradient(90deg, rgba(129, 140, 248, 0.25), rgba(99, 102, 241, 0.3));
+      border-color: rgba(129, 140, 248, 0.35);
       transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(129, 140, 248, 0.2);
     }
 
-    /* Glass button effect */
-    .glass-button {
-      display: inline-block;
-      padding: 14px 32px;
-      background: rgba(129, 140, 248, 0.1);
-      border: 1px solid rgba(129, 140, 248, 0.3);
-      border-radius: 12px;
-      color: #c7d2fe;
-      text-decoration: none;
-      font-weight: 500;
-      backdrop-filter: blur(10px);
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .glass-button::before {
-      content: "";
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 0;
-      height: 0;
-      border-radius: 50%;
-      background: rgba(129, 140, 248, 0.2);
-      transform: translate(-50%, -50%);
-      transition: width 0.6s ease, height 0.6s ease;
-    }
-
-    .glass-button:hover {
-      background: rgba(129, 140, 248, 0.2);
-      border-color: rgba(129, 140, 248, 0.5);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(129, 140, 248, 0.2);
-    }
-
-    .glass-button:hover::before {
-      width: 300px;
-      height: 300px;
-    }
-
-    .glass-button span {
-      position: relative;
-      z-index: 1;
-    }
-
-    /* Sources section with glass effect */
+    /* Sources glass panel */
     .sources {
       max-width: 1000px;
       margin: 60px auto 100px;
-      padding: 50px;
-      background: rgba(17, 24, 39, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 24px;
-      backdrop-filter: blur(40px) saturate(180%);
+      padding: 48px;
+      background: rgba(18, 18, 28, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 28px;
+      backdrop-filter: blur(60px) saturate(160%);
       box-shadow: 
         0 8px 32px rgba(0, 0, 0, 0.35),
-        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
       position: relative;
       z-index: 5;
       opacity: 0;
-      transform: translateY(40px) scale(0.95);
-      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: translateY(40px) scale(0.96);
+      transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow: hidden;
+    }
+
+    .sources::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 28px;
+      padding: 1px;
+      background: linear-gradient(165deg, rgba(99, 102, 241, 0.15), transparent 50%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      pointer-events: none;
     }
 
     .sources.show {
@@ -333,42 +444,58 @@
       box-shadow: 
         0 16px 48px rgba(0, 0, 0, 0.4),
         inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      border-color: rgba(99, 102, 241, 0.2);
+    }
+
+    .sources:hover::before {
+      opacity: 1;
     }
 
     .sources h2 {
-      font-size: 2rem;
-      margin-bottom: 35px;
-      color: #f9fafb;
+      font-size: 1.9rem;
+      margin-bottom: 32px;
+      color: #f3f4f6;
       font-weight: 700;
-      letter-spacing: -1px;
+      letter-spacing: -0.5px;
       text-align: center;
+      position: relative;
+      z-index: 1;
     }
 
     .sources ul {
       list-style: none;
       padding: 0;
+      position: relative;
+      z-index: 1;
     }
 
     .sources li {
-      margin-bottom: 20px;
+      margin-bottom: 18px;
       font-size: 1rem;
-      padding-left: 30px;
+      padding: 14px 20px 14px 45px;
       position: relative;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
       color: #d1d5db;
     }
 
     .sources li::before {
       content: "→";
       position: absolute;
-      left: 0;
+      left: 18px;
       color: #818cf8;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      font-size: 1.2rem;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .sources li:hover {
       transform: translateX(8px);
-      color: #f9fafb;
+      background: rgba(129, 140, 248, 0.08);
+      border-color: rgba(129, 140, 248, 0.2);
+      box-shadow: 0 4px 16px rgba(129, 140, 248, 0.1);
     }
 
     .sources li:hover::before {
@@ -379,119 +506,189 @@
     .sources a {
       color: inherit;
       text-decoration: none;
-      transition: all 0.3s ease;
+      transition: color 0.3s ease;
     }
 
     .sources a:hover {
-      color: #a5b4fc;
+      color: #e0e7ff;
     }
 
-    /* Smooth scroll indicator */
-    .scroll-indicator {
+    /* Scroll progress bar */
+    .scroll-progress {
       position: fixed;
       top: 0;
       left: 0;
-      height: 4px;
+      height: 3px;
       background: linear-gradient(90deg, #818cf8, #6366f1);
-      box-shadow: 0 0 10px rgba(129, 140, 248, 0.5);
+      box-shadow: 0 0 10px rgba(129, 140, 248, 0.5), 0 0 20px rgba(129, 140, 248, 0.3);
       z-index: 1000;
       transition: width 0.1s ease;
+      border-radius: 0 2px 2px 0;
+    }
+
+    /* Back to top glass button */
+    .back-to-top {
+      position: fixed;
+      bottom: 40px;
+      right: 40px;
+      width: 52px;
+      height: 52px;
+      background: rgba(18, 18, 28, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      backdrop-filter: blur(40px) saturate(160%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 100;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    .back-to-top.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .back-to-top:hover {
+      background: rgba(129, 140, 248, 0.15);
+      border-color: rgba(129, 140, 248, 0.3);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(129, 140, 248, 0.2);
+    }
+
+    .back-to-top::before {
+      content: "↑";
+      font-size: 1.5rem;
+      color: #c7d2fe;
     }
 
     @media (max-width: 768px) {
-      .header h1 { font-size: 2.5rem; }
-      .slide { padding: 35px 25px; }
+      .header-glass { padding: 40px 30px; margin: 30px 20px 30px; }
+      .header-glass h1 { font-size: 2.2rem; }
+      .nav-glass { flex-wrap: wrap; top: 10px; }
+      .slide { padding: 35px 28px; }
       .slide h2 { font-size: 1.6rem; }
-      .slide p { font-size: 0.95rem; }
-      .slide-number { font-size: 3.5rem; }
+      .slide p { font-size: 0.98rem; }
+      .slide-number { font-size: 3rem; top: 20px; right: 25px; }
+      .sources { padding: 35px 28px; }
+      .back-to-top { bottom: 20px; right: 20px; }
     }
   </style>
 </head>
 <body>
-  <div class="scroll-indicator"></div>
+  <div class="scroll-progress"></div>
 
-  <header class="header">
+  <div class="header-glass">
     <h1>The Path to Becoming a Judge</h1>
     <p class="subtitle">A Career Analysis & Personal Perspective</p>
-  </header>
+  </div>
+
+  <nav class="nav-glass">
+    <a href="#daily" class="glass-btn">Daily Life</a>
+    <a href="#education" class="glass-btn">Education</a>
+    <a href="#skills" class="glass-btn">Skills</a>
+    <a href="#salary" class="glass-btn">Salary</a>
+    <a href="#challenges" class="glass-btn">Challenges</a>
+    <a href="#rewards" class="glass-btn">Rewards</a>
+  </nav>
 
   <div class="slides-container">
-    <div class="slide">
+    <div class="slide" id="daily">
       <div class="slide-number">01</div>
-      <h2>What Does a Judge Actually Do?</h2>
-      <p>A judge's day starts pretty early in the morning, usually around 7 or 8 AM. They spend the first couple hours <span class="highlight">reviewing case files and legal documents</span> so they know whats happening before court starts. Then they spend most of the day presiding over hearings and trials, where they listen to lawyers make their arguments, question witnesses, and make sure everyone follows the proper legal procedures.</p>
-      <p>Between court sessions, judges do alot of legal research and write their opinions on cases. They meet with their law clerks to discuss complicated cases and figure out what the law says. They also handle administrative stuff like reviewing motions and making really important decisions about things like bail, sentencing, and civil disputes. <span class="highlight">Every decision they make effects real people's lives</span>, which is why they have to stay focused and impartial even during really long and exhausting days.</p>
+      <div class="slide-content">
+        <h2>What Does a Judge Actually Do?</h2>
+        <p>A judge's day starts pretty early in the morning, usually around 7 or 8 AM. They spend the first couple hours <span class="highlight">reviewing case files and legal documents</span> so they know whats happening before court starts. Then they spend most of the day presiding over hearings and trials, where they listen to lawyers make their arguments, question witnesses, and make sure everyone follows the proper legal procedures.</p>
+        <p>Between court sessions, judges do alot of legal research and write their opinions on cases. They meet with their law clerks to discuss complicated cases and figure out what the law says. They also handle administrative stuff like reviewing motions and making really important decisions about things like bail, sentencing, and civil disputes. <span class="highlight">Every decision they make effects real people's lives</span>, which is why they have to stay focused and impartial even during really long and exhausting days.</p>
+      </div>
     </div>
 
-    <div class="slide">
+    <div class="slide" id="education">
       <div class="slide-number">02</div>
-      <h2>Education & Requirements</h2>
-      <h3>School Path</h3>
-      <p>If you want to become a judge, you first need to get a <span class="highlight">bachelor's degree which takes 4 years</span>. After that, you have to go to law school and earn a <span class="highlight">Juris Doctor (J.D.) degree which takes another 3 years</span>. Once you graduate from law school, you need to pass the bar exam in your state before you can practice law. Some people also get additional degrees to specialize in certain areas of law.</p>
-      <h3>Experience You Need</h3>
-      <p>Most states require you to have <span class="highlight">atleast 5-10 years of experience</span> working as a lawyer before you can become a judge. This could be working as a prosecutor (the person who brings charges against criminals), a defense attorney (who defends people accused of crimes), or doing civil law cases. Judges also have to keep learning throughout there career to stay up-to-date with new laws and changes in the legal system.</p>
+      <div class="slide-content">
+        <h2>Education & Requirements</h2>
+        <h3>School Path</h3>
+        <p>If you want to become a judge, you first need to get a <span class="highlight">bachelor's degree which takes 4 years</span>. After that, you have to go to law school and earn a <span class="highlight">Juris Doctor (J.D.) degree which takes another 3 years</span>. Once you graduate from law school, you need to pass the bar exam in your state before you can practice law. Some people also get additional degrees to specialize in certain areas of law.</p>
+        <h3>Experience You Need</h3>
+        <p>Most states require you to have <span class="highlight">atleast 5-10 years of experience</span> working as a lawyer before you can become a judge. This could be working as a prosecutor (the person who brings charges against criminals), a defense attorney (who defends people accused of crimes), or doing civil law cases. Judges also have to keep learning throughout there career to stay up-to-date with new laws and changes in the legal system.</p>
+      </div>
     </div>
 
-    <div class="slide">
+    <div class="slide" id="skills">
       <div class="slide-number">03</div>
-      <h2>Important Skills You Need</h2>
-      <h3>Thinking & Analysis</h3>
-      <p>Judges need to have <span class="highlight">really strong analytical skills</span> so they can interpret complicated laws, look at evidence objectively, and apply past court decisions (called precedents) to new cases. They need to pay super close attention to details so they can catch any inconsistencies and figure out if witnesses are telling the truth.</p>
-      <h3>Communication Skills</h3>
-      <p>Being able to communicate clearly is crucial because judges have to explain their decisions to everyone, give instructions to juries, and keep order in the courtroom. They need to have <span class="highlight">patience and emotional intelligence</span> to deal with all different kinds of people, from nervous defendants to aggressive lawyers who's arguments can get pretty heated.</p>
-      <h3>Ethics & Making Tough Decisions</h3>
-      <p>Most importantly, judges have to have really strong ethics and the courage to make difficult decisions under pressure, often with limited time and with high stakes that effect people's entire lives.</p>
+      <div class="slide-content">
+        <h2>Important Skills You Need</h2>
+        <h3>Thinking & Analysis</h3>
+        <p>Judges need to have <span class="highlight">really strong analytical skills</span> so they can interpret complicated laws, look at evidence objectively, and apply past court decisions (called precedents) to new cases. They need to pay super close attention to details so they can catch any inconsistencies and figure out if witnesses are telling the truth.</p>
+        <h3>Communication Skills</h3>
+        <p>Being able to communicate clearly is crucial because judges have to explain their decisions to everyone, give instructions to juries, and keep order in the courtroom. They need to have <span class="highlight">patience and emotional intelligence</span> to deal with all different kinds of people, from nervous defendants to aggressive lawyers who's arguments can get pretty heated.</p>
+        <h3>Ethics & Making Tough Decisions</h3>
+        <p>Most importantly, judges have to have really strong ethics and the courage to make difficult decisions under pressure, often with limited time and with high stakes that effect people's entire lives.</p>
+      </div>
     </div>
 
-    <div class="slide">
+    <div class="slide" id="salary">
       <div class="slide-number">04</div>
-      <h2>How Much Do Judges Make?</h2>
-      <h3>Salary Range</h3>
-      <p>According to the U.S. Bureau of Labor Statistics, judges earn a <span class="highlight">median salary of about $133,920 per year</span>. But the actual amount varies alot depending on where you work and what level of court your in.</p>
-      <h3>Different Levels</h3>
-      <p><span class="highlight">Local and municipal judges</span> typically make between $60,000-$120,000 annually. <span class="highlight">State trial court judges</span> earn around $130,000-$200,000. Federal district court judges make approximately <span class="highlight">$230,000</span>, and U.S. Supreme Court Justices earn about <span class="highlight">$298,500</span> which is significantly higher.</p>
-      <p>Most judicial jobs also come with really good benefits like health insurance, retirement plans, and great job security. Many judges have lengthy appointments or even lifetime positions once their confirmed, especially at the federal level.</p>
+      <div class="slide-content">
+        <h2>How Much Do Judges Make?</h2>
+        <h3>Salary Range</h3>
+        <p>According to the U.S. Bureau of Labor Statistics, judges earn a <span class="highlight">median salary of about $133,920 per year</span>. But the actual amount varies alot depending on where you work and what level of court your in.</p>
+        <h3>Different Levels</h3>
+        <p><span class="highlight">Local and municipal judges</span> typically make between $60,000-$120,000 annually. <span class="highlight">State trial court judges</span> earn around $130,000-$200,000. Federal district court judges make approximately <span class="highlight">$230,000</span>, and U.S. Supreme Court Justices earn about <span class="highlight">$298,500</span> which is significantly higher.</p>
+        <p>Most judicial jobs also come with really good benefits like health insurance, retirement plans, and great job security. Many judges have lengthy appointments or even lifetime positions once their confirmed, especially at the federal level.</p>
+      </div>
     </div>
 
-    <div class="slide">
+    <div class="slide" id="challenges">
       <div class="slide-number">05</div>
-      <h2>The Challenges of Being a Judge</h2>
-      <h3>Emotional Stress</h3>
-      <p>Judges have to deal with <span class="highlight">really difficult cases involving violence, abuse, and tragedy</span> on a regular basis. Making decisions that completely change someone's life—like deciding child custody or how long someone goes to prison—creates a huge amount of emotional stress that builds up over time.</p>
-      <h3>Public Criticism</h3>
-      <p>Judicial decisions are often controversial and people criticize them in the media and public. Judges have to stay neutral and fair even when the community is mad at them or when there's political pressure to decide a certain way. This is really hard when your decisions are constantly being questioned and judged.</p>
-      <h3>Heavy Workload</h3>
-      <p>Judges have to handle <span class="highlight">massive caseloads which means long hours</span> and constant pressure to keep up with demanding schedules. Also, because of ethical rules, judges can't really hang out with certain people or do certain activities, which creates professional isolation from friends and former colleagues. This can effect their personal life pretty significantly.</p>
+      <div class="slide-content">
+        <h2>The Challenges of Being a Judge</h2>
+        <h3>Emotional Stress</h3>
+        <p>Judges have to deal with <span class="highlight">really difficult cases involving violence, abuse, and tragedy</span> on a regular basis. Making decisions that completely change someone's life—like deciding child custody or how long someone goes to prison—creates a huge amount of emotional stress that builds up over time.</p>
+        <h3>Public Criticism</h3>
+        <p>Judicial decisions are often controversial and people criticize them in the media and public. Judges have to stay neutral and fair even when the community is mad at them or when there's political pressure to decide a certain way. This is really hard when your decisions are constantly being questioned and judged.</p>
+        <h3>Heavy Workload</h3>
+        <p>Judges have to handle <span class="highlight">massive caseloads which means long hours</span> and constant pressure to keep up with demanding schedules. Also, because of ethical rules, judges can't really hang out with certain people or do certain activities, which creates professional isolation from friends and former colleagues. This can effect their personal life pretty significantly.</p>
+      </div>
     </div>
 
-    <div class="slide">
+    <div class="slide" id="rewards">
       <div class="slide-number">06</div>
-      <h2>Why Being a Judge is Rewarding</h2>
-      <h3>Making a Real Difference</h3>
-      <p>Judges get the amazing opportunity to <span class="highlight">uphold justice and protect people's rights</span>. They resolve disputes fairly, give closure to victims, and make sure the legal system works properly for everyone regardless of there background or how much money they have.</p>
-      <h3>Intellectual Challenge</h3>
-      <p>The job offers continuous <span class="highlight">intellectual stimulation</span> because judges are always analyzing complex legal issues, writing thoughtful opinions, and contributing to how law develops through their precedent-setting decisions that will affect future cases.</p>
-      <h3>Respect & Job Security</h3>
-      <p>Judges are <span class="highlight">highly respected in their communities</span> and hold positions of authority. Many judicial appointments provide lifetime tenure or really long terms, which means excellent job security. The role also lets judges mentor young lawyers and help shape the future of the legal profession, which is pretty fulfilling.</p>
+      <div class="slide-content">
+        <h2>Why Being a Judge is Rewarding</h2>
+        <h3>Making a Real Difference</h3>
+        <p>Judges get the amazing opportunity to <span class="highlight">uphold justice and protect people's rights</span>. They resolve disputes fairly, give closure to victims, and make sure the legal system works properly for everyone regardless of there background or how much money they have.</p>
+        <h3>Intellectual Challenge</h3>
+        <p>The job offers continuous <span class="highlight">intellectual stimulation</span> because judges are always analyzing complex legal issues, writing thoughtful opinions, and contributing to how law develops through their precedent-setting decisions that will affect future cases.</p>
+        <h3>Respect & Job Security</h3>
+        <p>Judges are <span class="highlight">highly respected in their communities</span> and hold positions of authority. Many judicial appointments provide lifetime tenure or really long terms, which means excellent job security. The role also lets judges mentor young lawyers and help shape the future of the legal profession, which is pretty fulfilling.</p>
+      </div>
     </div>
 
     <div class="slide">
       <div class="slide-number">07</div>
-      <h2>Judges in the Criminal Justice System</h2>
-      <h3>Protecting Rights</h3>
-      <p>Judges are <span class="highlight">impartial arbiters who protect constitutional rights</span> during criminal cases. They make sure defendants get fair trials, evidence is admitted properly, and all legal procedures are followed correctly to protect the integrity of the justice system.</p>
-      <h3>Balancing Justice</h3>
-      <p>When it comes to sentencing, judges have to balance punishment with rehabilitation. They consider things like the person's criminal history, what actually happened in the crime, and whether the person can be reformed. They follow sentencing guidelines but also use their judgment to make fair decisions that affect both the defendant and society.</p>
-      <h3>System Integrity</h3>
-      <p>Judges help maintain <span class="highlight">public trust in the legal system</span> by being fair, consistent, and transparent. They protect against prosecutorial misconduct and make sure laws are applied equally no matter someone's wealth or status. There decisions set precedents that guide future cases and help shape criminal justice policy.</p>
+      <div class="slide-content">
+        <h2>Judges in the Criminal Justice System</h2>
+        <h3>Protecting Rights</h3>
+        <p>Judges are <span class="highlight">impartial arbiters who protect constitutional rights</span> during criminal cases. They make sure defendants get fair trials, evidence is admitted properly, and all legal procedures are followed correctly to protect the integrity of the justice system.</p>
+        <h3>Balancing Justice</h3>
+        <p>When it comes to sentencing, judges have to balance punishment with rehabilitation. They consider things like the person's criminal history, what actually happened in the crime, and whether the person can be reformed. They follow sentencing guidelines but also use their judgment to make fair decisions that affect both the defendant and society.</p>
+        <h3>System Integrity</h3>
+        <p>Judges help maintain <span class="highlight">public trust in the legal system</span> by being fair, consistent, and transparent. They protect against prosecutorial misconduct and make sure laws are applied equally no matter someone's wealth or status. There decisions set precedents that guide future cases and help shape criminal justice policy.</p>
+      </div>
     </div>
 
     <div class="slide">
       <div class="slide-number">08</div>
-      <h2>My Personal Thoughts on This Career</h2>
-      <p><span class="highlight">Honestly, I don't think this career is for me.</span> While I have huge respect for judges and the important role they play in society, I think the personal cost would be too much. Having to make life-changing decisions every single day, knowing that your ruling could completely alter someone's life or their family's future, would be really overwhelming emotionally.</p>
-      <p>The amount of education required—7+ years after high school—plus the years of demanding legal work you have to do before even being eligible to become a judge seems like alot. And then you have the <span class="highlight">constant pressure of heavy caseloads and being isolated professionally</span> because of ethical restrictions, plus dealing with public scrutiny whenever you make an unpopular decision.</p>
-      <p>While the intellectual challenge is interesting and the chance to serve justice is admirable, I think the personal sacrifices and emotional weight would be too much for me personally. But I definitely respect people who choose this path and take on these huge responsibilities with integrity.</p>
+      <div class="slide-content">
+        <h2>My Personal Thoughts on This Career</h2>
+        <p><span class="highlight">Honestly, I don't think this career is for me.</span> While I have huge respect for judges and the important role they play in society, I think the personal cost would be too much. Having to make life-changing decisions every single day, knowing that your ruling could completely alter someone's life or their family's future, would be really overwhelming emotionally.</p>
+        <p>The amount of education required—7+ years after high school—plus the years of demanding legal work you have to do before even being eligible to become a judge seems like alot. And then you have the <span class="highlight">constant pressure of heavy caseloads and being isolated professionally</span> because of ethical restrictions, plus dealing with public scrutiny whenever you make an unpopular decision.</p>
+        <p>While the intellectual challenge is interesting and the chance to serve justice is admirable, I think the personal sacrifices and emotional weight would be too much for me personally. But I definitely respect people who choose this path and take on these huge responsibilities with integrity.</p>
+      </div>
     </div>
   </div>
 
@@ -505,40 +702,41 @@
     </ul>
   </section>
 
+  <div class="back-to-top">
+  </div>
+
   <script>
-    // Create floating particles
-    for (let i = 0; i < 30; i++) {
-      const particle = document.createElement('div');
-      particle.className = 'particle';
-      particle.style.left = Math.random() * 100 + '%';
-      particle.style.animationDelay = Math.random() * 20 + 's';
-      particle.style.animationDuration = (15 + Math.random() * 10) + 's';
-      document.body.appendChild(particle);
+    // Create subtle floating particle glints
+    for (let i = 0; i < 40; i++) {
+      const glint = document.createElement('div');
+      glint.className = 'particle-glint';
+      glint.style.left = Math.random() * 100 + '%';
+      glint.style.animationDelay = Math.random() * 25 + 's';
+      glint.style.animationDuration = (20 + Math.random() * 15) + 's';
+      document.body.appendChild(glint);
     }
 
-    // Smooth scroll progress indicator
+    // Smooth scroll progress
+    const scrollProgress = document.querySelector('.scroll-progress');
     window.addEventListener('scroll', () => {
-      const scrollIndicator = document.querySelector('.scroll-indicator');
       const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
       const scrolled = (window.scrollY / windowHeight) * 100;
-      scrollIndicator.style.width = scrolled + '%';
+      scrollProgress.style.width = scrolled + '%';
     });
 
-    // Intersection Observer for slide animations
+    // Intersection Observer for smooth reveals
     const slides = document.querySelectorAll('.slide');
     const sources = document.querySelector('.sources');
     
     const observerOptions = {
-      threshold: 0.15,
-      rootMargin: '0px 0px -100px 0px'
+      threshold: 0.1,
+      rootMargin: '0px 0px -80px 0px'
     };
 
     const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry, index) => {
+      entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          setTimeout(() => {
-            entry.target.classList.add('show');
-          }, index * 100);
+          entry.target.classList.add('show');
         }
       });
     }, observerOptions);
@@ -546,25 +744,63 @@
     slides.forEach(slide => observer.observe(slide));
     if (sources) observer.observe(sources);
 
-    // Smooth parallax effect on scroll
-    let ticking = false;
+    // Back to top button
+    const backToTop = document.querySelector('.back-to-top');
     window.addEventListener('scroll', () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const scrolled = window.pageYOffset;
-          document.querySelectorAll('.slide').forEach((slide, index) => {
-            const rect = slide.getBoundingClientRect();
-            if (rect.top < window.innerHeight && rect.bottom > 0) {
-              const speed = 0.5;
-              const yPos = -(rect.top * speed);
-              slide.style.transform = `translateY(${yPos * 0.1}px)`;
-            }
-          });
-          ticking = false;
-        });
-        ticking = true;
+      if (window.scrollY > 500) {
+        backToTop.classList.add('show');
+      } else {
+        backToTop.classList.remove('show');
       }
     });
+
+    backToTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Smooth scroll for nav links
+    document.querySelectorAll('.glass-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = document.querySelector(btn.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    // Add ripple effect on button click
+    document.querySelectorAll('.glass-btn').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        const ripple = document.createElement('span');
+        const rect = this.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        const x = e.clientX - rect.left - size / 2;
+        const y = e.clientY - rect.top - size / 2;
+        
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = x + 'px';
+        ripple.style.top = y + 'px';
+        ripple.style.position = 'absolute';
+        ripple.style.borderRadius = '50%';
+        ripple.style.background = 'rgba(129, 140, 248, 0.3)';
+        ripple.style.transform = 'scale(0)';
+        ripple.style.animation = 'ripple 0.6s ease-out';
+        ripple.style.pointerEvents = 'none';
+        
+        this.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 600);
+      });
+    });
+
+    // Add ripple animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes ripple {
+        to { transform: scale(2); opacity: 0; }
+      }
+    `;
+    document.head.appendChild(style);
   </script>
 </body>
 </html>
